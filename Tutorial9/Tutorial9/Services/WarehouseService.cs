@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using Microsoft.Data.SqlClient;
 using Tutorial9.Model.DTOs;
 
@@ -98,5 +99,22 @@ public class WarehouseService : IWarehouseService
             throw;
         }
        
+    }
+    public async Task<int> AddToProduct_WarehouseProcedure(ProductDTO product)
+    {
+        await using var conn = new SqlConnection(_configuration.GetConnectionString("Default"));
+        await using var cmd = new SqlCommand("AddProductToWarehouse", conn)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        cmd.Parameters.AddWithValue("@IdProduct", product.IdProduct);
+        cmd.Parameters.AddWithValue("@IdWarehouse", product.IdWarehouse);
+        cmd.Parameters.AddWithValue("@Amount", product.Amount);
+        cmd.Parameters.AddWithValue("@CreatedAt", product.CreatedAt);
+
+        await conn.OpenAsync();
+        int result = (int)await cmd.ExecuteScalarAsync();
+        return result;
     }
 }

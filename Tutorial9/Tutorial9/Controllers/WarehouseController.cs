@@ -21,4 +21,18 @@ public class WarehouseController(IWarehouseService _warehouseService) : Controll
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPost("Procedure")]
+    public async Task<IActionResult> AddToProduct_WarehouseProcedure([FromBody] ProductDTO product)
+    {
+        try
+        {
+            var result = await _warehouseService.AddToProduct_WarehouseProcedure(product);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
